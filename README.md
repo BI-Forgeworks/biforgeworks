@@ -5,19 +5,18 @@ analytics development environment.
 
 ## Current status
 
-**Foundation only.** This repository currently contains the repository
-bootstrap (work package WP00): monorepo structure, engineering standards,
-CI, and a minimal Tauri desktop shell that displays branding only. **No
-Power BI, PBIP, PBIR, TMDL, DAX, Fabric, connector, or publishing
-functionality exists yet.**
+**Read-only project discovery (WP01).** The Linux desktop can select a `.pbip`,
+resolve its report and local semantic-model references, identify PBIR,
+PBIR-Legacy, TMDL, and TMSL storage markers, and display structural diagnostics.
+It does not edit or save projects, parse report/model semantics, authenticate,
+or publish. Format identification is not semantic validation.
 
 ## Current milestone
 
 > Phase 1: Linux-native PBIP/PBIR/TMDL editing and Power BI/Fabric
 > publishing.
 
-This is the target for the next phase of work, stated here for context. It
-**does not exist yet** — WP00 explicitly does not implement any of it. See
+Editing and publishing remain future work. See
 `docs/work-packages/` for how work is sequenced toward this milestone.
 
 ## Goals
@@ -54,12 +53,13 @@ biforgeworks/
 │       ├── src-tauri/
 │       └── package.json
 ├── crates/
-│   └── biforgeworks-core/ # Shared Rust core library
+│   ├── biforgeworks-core/ # Shared Rust core library
+│   └── biforgeworks-powerbi/ # Read-only project discovery and diagnostics
 ├── packages/
 │   └── ui/                # Shared React/TypeScript UI package
 ├── connectors/            # Future data connectors (empty in WP00)
 ├── targets/                # Future publish targets (empty in WP00)
-├── fixtures/               # Future test fixtures (empty in WP00)
+├── fixtures/powerbi/       # Minimal synthetic discovery fixtures
 ├── docs/
 │   ├── architecture/       # Architecture overview
 │   ├── adr/                 # Architecture decision records
@@ -134,12 +134,11 @@ pnpm dev
 ```
 
 The repository pins the Tauri CLI as a development dependency. Tauri starts
-the Vite server and opens the native window, rendering:
+the Vite server and opens the native window. Choose **Open Power BI Project**
+and select a `.pbip`. To try a synthetic example, select the file inside:
 
 ```text
-BI Forgeworks
-Linux-native analytics engineering
-Developer Preview
+fixtures/powerbi/valid-pbir-tmdl/
 ```
 
 For browser-only frontend iteration without a native window, run:
@@ -163,9 +162,15 @@ pnpm typecheck
 pnpm test
 ```
 
-The Vitest smoke coverage exercises React startup and branded rendering with
-the native command bridge mocked. It does not automate the Tauri window;
-native Linux startup is validated manually for WP00.
+Rust coverage exercises discovery, malformed inputs, path confinement, and
+read-only preservation. Vitest covers project rendering, diagnostics, errors,
+and cancellation with the native bridge mocked. Native Linux selection/open
+is validated separately; Vitest is not native-window E2E automation.
+
+See [discovery architecture](docs/architecture/powerbi-project-discovery.md)
+for supported metadata, security limits, and timestamp-preserving Linux reads.
+Remote model connections and references outside the selected project root are
+diagnosed without following them.
 
 ## Build
 

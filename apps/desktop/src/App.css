@@ -14,7 +14,7 @@
   color: light-dark(#444, #ccc);
 }
 
-.app-shell span {
+.app-shell > span {
   margin-top: 0.5rem;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
@@ -22,4 +22,198 @@
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.app-shell__workspace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(640px, 100%);
+  margin-top: 1.5rem;
+}
+
+.app-shell__section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-shell__section-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: light-dark(#444, #ccc);
+}
+
+.app-shell__readonly-badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid light-dark(#2471a3, #5dade2);
+  color: light-dark(#2471a3, #5dade2);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.app-shell__open-button {
+  padding: 0.55rem 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid currentColor;
+  background: light-dark(#f5f5f5, #222);
+  color: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.app-shell__open-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.app-shell__error {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.4rem;
+  border: 1px solid light-dark(#c0392b, #e74c3c);
+  color: light-dark(#c0392b, #e74c3c);
+  font-size: 0.9rem;
+}
+
+.app-shell__empty {
+  margin: 0;
+  color: light-dark(#666, #999);
+  font-size: 0.9rem;
+}
+
+.project-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+}
+
+.project-explorer__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.project-explorer__name {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.project-explorer__meta,
+.project-component-card__meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.15rem 0.75rem;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.project-explorer__meta dt,
+.project-component-card__meta dt {
+  color: light-dark(#666, #999);
+}
+
+.project-explorer__meta dd,
+.project-component-card__meta dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+.project-explorer__components {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.project-component-card {
+  border: 1px solid light-dark(#ddd, #333);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.project-component-card__title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.project-diagnostics__title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.project-diagnostics__empty {
+  margin: 0;
+  color: light-dark(#666, #999);
+  font-size: 0.85rem;
+}
+
+.project-diagnostics__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.project-diagnostic {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid light-dark(#ddd, #333);
+  font-size: 0.85rem;
+}
+
+.project-diagnostic__severity {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+}
+
+.project-diagnostic--error {
+  border-color: light-dark(#c0392b, #e74c3c);
+}
+
+.project-diagnostic--error .project-diagnostic__severity {
+  color: light-dark(#c0392b, #e74c3c);
+}
+
+.project-diagnostic--warning {
+  border-color: light-dark(#b7791f, #f1c40f);
+}
+
+.project-diagnostic--warning .project-diagnostic__severity {
+  color: light-dark(#b7791f, #f1c40f);
+}
+
+.project-diagnostic--info {
+  border-color: light-dark(#2471a3, #5dade2);
+}
+
+.project-diagnostic--info .project-diagnostic__severity {
+  color: light-dark(#2471a3, #5dade2);
+}
+
+.project-diagnostic__code {
+  font-family: monospace;
+  color: light-dark(#666, #999);
+}
+
+.project-diagnostic__path {
+  width: 100%;
+  word-break: break-all;
+  color: light-dark(#666, #999);
 }

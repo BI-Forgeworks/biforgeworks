@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Minimal capability set for the BI Forgeworks WP00 shell. No shell execution, filesystem, or network access is granted.",
+  "description": "Core window capabilities only. Native PBIP selection is exposed through a filtered application command; no general dialog, filesystem, shell, or network plugin permission is granted.",
   "windows": ["main"],
   "permissions": ["core:default"]
 }
