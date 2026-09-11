@@ -1,0 +1,42 @@
+# --- Secrets and local environment (never commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*
+*secrets*
+
+# --- Rust ---
+/target/
+**/target/
+Cargo.lock.bak
+
+# --- Node / pnpm ---
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.pnpm-store/
+.turbo/
+.vite/
+
+# --- Tauri ---
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
+
+# --- Editors and OS ---
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Logs and coverage ---
+*.log
+npm-debug.log*
+pnpm-debug.log*
+coverage/
