@@ -1,0 +1,18 @@
+[package]
+name = "biforgeworks-desktop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "BI Forgeworks Tauri desktop shell."
+
+[lib]
+name = "biforgeworks_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+biforgeworks-core = { path = "../../../crates/biforgeworks-core" }
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }

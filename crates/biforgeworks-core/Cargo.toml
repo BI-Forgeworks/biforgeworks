@@ -1,0 +1,6 @@
+[package]
+name = "biforgeworks-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Shared, framework-agnostic application metadata for BI Forgeworks."
