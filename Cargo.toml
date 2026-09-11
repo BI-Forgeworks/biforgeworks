@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "apps/desktop/src-tauri",
     "crates/biforgeworks-core",
+    "crates/biforgeworks-powerbi",
 ]
 
 [workspace.package]

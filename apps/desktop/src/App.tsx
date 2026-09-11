@@ -1,9 +1,30 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { getAppMetadata, type AppMetadata } from './api/appMetadata'
+import {
+  openPowerbiProject,
+  selectPowerbiProject,
+  type PowerbiProjectSummary,
+} from './api/powerbiProject'
 import { AppShell } from './AppShell'
+
+// Tauri commands here return `Result<T, String>`, so a command failure
+// rejects with a plain string rather than an `Error` instance.
+function describeProjectError(error: unknown): string {
+  if (typeof error === 'string') {
+    return error
+  }
+  if (error instanceof Error) {
+    return error.message
+  }
+  return 'Failed to open the selected Power BI project.'
+}
 
 export function App() {
   const [metadata, setMetadata] = useState<AppMetadata | null>(null)
+  const [project, setProject] = useState<PowerbiProjectSummary | null>(null)
+  const [isOpeningProject, setIsOpeningProject] = useState(false)
+  const [projectError, setProjectError] = useState<string | null>(null)
+  const isOpeningRef = useRef(false)
 
   useEffect(() => {
     let cancelled = false
@@ -23,5 +44,44 @@ export function App() {
     }
   }, [])
 
-  return <AppShell metadata={metadata} />
+  const handleOpenProject = useCallback(() => {
+    // Guard with a ref (in addition to the disabled button) so a rapid
+    // double-click can never start a second concurrent open.
+    if (isOpeningRef.current) {
+      return
+    }
+    isOpeningRef.current = true
+    setIsOpeningProject(true)
+    setProjectError(null)
+
+    void (async () => {
+      try {
+        const path = await selectPowerbiProject()
+        if (path === null) {
+          // Selection cancelled: preserve whatever project summary was
+          // already displayed.
+          return
+        }
+
+        const summary = await openPowerbiProject(path)
+        setProject(summary)
+      } catch (error: unknown) {
+        console.error('Failed to open Power BI project', error)
+        setProjectError(describeProjectError(error))
+      } finally {
+        isOpeningRef.current = false
+        setIsOpeningProject(false)
+      }
+    })()
+  }, [])
+
+  return (
+    <AppShell
+      metadata={metadata}
+      project={project}
+      isOpeningProject={isOpeningProject}
+      projectError={projectError}
+      onOpenProject={handleOpenProject}
+    />
+  )
 }

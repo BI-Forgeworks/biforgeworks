@@ -2,10 +2,9 @@
 
 ## Status
 
-This document describes the architecture implemented as of WP00
-(repository bootstrap). It is intentionally minimal: WP00 establishes the
-application shell and layering, not any Power BI or analytics
-functionality.
+WP00 established the application shell and layering. WP01 adds read-only
+Power BI project discovery, format identification, and diagnostics. Editing,
+semantic parsing, and publishing remain future work.
 
 ## Implemented boundary
 
@@ -14,9 +13,11 @@ React / TypeScript
        │
        ▼
    Tauri Commands
-       │
-       ▼
- Rust Core Libraries
+       ├── biforgeworks-core (application metadata)
+       └── biforgeworks-powerbi (read-only project discovery)
+                       │
+                       ▼
+             bounded local filesystem access
 ```
 
 - **React / TypeScript** (`apps/desktop/src`, `packages/ui`) is the
@@ -25,8 +26,9 @@ React / TypeScript
   domain logic.
 - **Tauri Commands** (`apps/desktop/src-tauri`) form the explicit,
   typed boundary between the frontend and the Rust core. The Tauri backend
-  depends on and calls into `crates/biforgeworks-core`.
-- **Rust Core Libraries** (`crates/biforgeworks-core` and future crates)
+  provides native PBIP selection and delegates discovery to
+  `crates/biforgeworks-powerbi`. Application metadata still comes from core.
+- **Rust Core Libraries** (`crates/biforgeworks-core`, `crates/biforgeworks-powerbi`, and future crates)
   hold reusable application and domain logic. This is the authoritative
   layer for project and domain behavior.
 
@@ -37,11 +39,11 @@ surface.
 ## Reserved conceptual layers
 
 The following layers are reserved in the architecture but are **not
-implemented** in WP00. They exist here only so that future work packages
+implemented** by WP01. They exist here only so that future work packages
 have a named place to land, and so that early decisions do not foreclose
 them:
 
-- **Project** — the in-memory representation of an opened BI project.
+- **Project** — a general project/domain layer beyond WP01's Power BI summary.
 - **BFIR** — a future, vendor-neutral BI intermediate representation.
 - **Power BI Adapter** — translation between PBIP/PBIR/TMDL and BFIR.
 - **Fabric** — integration with Microsoft Fabric publishing/workspaces.
@@ -50,7 +52,8 @@ them:
 - **Visuals** — HTML/SVG and geospatial visual rendering.
 - **Agents** — agent-facing interfaces built on the shared core commands.
 
-None of these layers have code, schemas, or dependencies in WP00. They must
+WP01's dedicated adapter contains only outer project discovery, with no BFIR
+translation or semantic object model. The remaining layers must
 not be implemented opportunistically; each is scoped to a future work
 package per `docs/work-packages/`.
 
@@ -58,3 +61,5 @@ package per `docs/work-packages/`.
 
 - Architecture decisions: `docs/adr/`
 - Work package definitions: `docs/work-packages/`
+- Discovery boundaries: [Power BI project discovery](powerbi-project-discovery.md)
+- Dedicated crate decision: [ADR-0004](../adr/0004-powerbi-interoperability-crate.md)
