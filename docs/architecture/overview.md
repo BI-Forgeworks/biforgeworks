@@ -3,8 +3,9 @@
 ## Status
 
 WP00 established the application shell and layering. WP01 adds read-only
-Power BI project discovery, format identification, and diagnostics. Editing,
-semantic parsing, and publishing remain future work.
+Power BI project discovery, format identification, and diagnostics. WP02 adds
+snapshot-based explicit transactions inside the Power BI crate. The desktop
+remains read-only; semantic parsing/editing and publishing remain future work.
 
 ## Implemented boundary
 
@@ -14,11 +15,27 @@ React / TypeScript
        ▼
    Tauri Commands
        ├── biforgeworks-core (application metadata)
-       └── biforgeworks-powerbi (read-only project discovery)
+       └── biforgeworks-powerbi (discovery)
                        │
                        ▼
              bounded local filesystem access
 ```
+
+The same Rust crate also contains the WP02 write foundation:
+
+```text
+ProjectSession → ProjectSnapshot
+       ↓
+ProjectTransaction → explicit metadata operation
+       ↓
+validate / conflict checks → atomic file replacement
+       ↓
+rediscovery / preservation checks → fresh snapshot
+       └── failure → rollback / retained recovery evidence
+```
+
+These write APIs are not exposed through Tauri in WP02. Future high-level
+commands must use this boundary rather than grant frontend filesystem writes.
 
 - **React / TypeScript** (`apps/desktop/src`, `packages/ui`) is the
   presentation layer. It renders UI and calls into the backend through
@@ -39,7 +56,7 @@ surface.
 ## Reserved conceptual layers
 
 The following layers are reserved in the architecture but are **not
-implemented** by WP01. They exist here only so that future work packages
+implemented** by WP02. They exist here only so that future work packages
 have a named place to land, and so that early decisions do not foreclose
 them:
 
@@ -52,8 +69,8 @@ them:
 - **Visuals** — HTML/SVG and geospatial visual rendering.
 - **Agents** — agent-facing interfaces built on the shared core commands.
 
-WP01's dedicated adapter contains only outer project discovery, with no BFIR
-translation or semantic object model. The remaining layers must
+The dedicated adapter contains outer project discovery and explicit safe-write
+infrastructure, with no BFIR translation or semantic object model. The remaining layers must
 not be implemented opportunistically; each is scoped to a future work
 package per `docs/work-packages/`.
 
@@ -63,3 +80,5 @@ package per `docs/work-packages/`.
 - Work package definitions: `docs/work-packages/`
 - Discovery boundaries: [Power BI project discovery](powerbi-project-discovery.md)
 - Dedicated crate decision: [ADR-0004](../adr/0004-powerbi-interoperability-crate.md)
+- Save boundary: [Power BI safe writes](powerbi-safe-writes.md)
+- Transaction decision: [ADR-0005](../adr/0005-snapshot-based-explicit-transactions.md)

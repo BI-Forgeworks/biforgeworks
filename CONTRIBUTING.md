@@ -59,18 +59,26 @@ Tests belong with the implementation they cover, in the same change.
 Before opening a pull request, run:
 
 ```bash
+cargo check --workspace --locked
 cargo fmt --check
 cargo clippy --workspace --all-targets --all-features -- -D warnings
 cargo test --workspace
+cargo test -p biforgeworks-powerbi --features safe_write_test_support
 pnpm install --frozen-lockfile
 pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+git diff --check
 ```
 
 `scripts/check.sh` runs these in sequence as a local convenience wrapper;
 it does not replace running them directly, and CI runs them independently.
+
+The default-off `safe_write_test_support` feature exposes fault injection and
+controlled multi-file staging for tests only. Do not enable it for the desktop
+application or expose its methods through Tauri commands. Production operations
+must remain explicit, with validation inside `biforgeworks-powerbi`.
 
 ## Pull requests
 

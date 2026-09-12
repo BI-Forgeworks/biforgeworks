@@ -292,8 +292,13 @@ fn non_regular_metadata_is_rejected_without_blocking() {
     let root = tmp.path().join("socket-marker");
     let pbip = build_pbir_tmdl(&root, "F");
     fs::remove_dir_all(root.join("F.Report/definition")).unwrap();
-    let _listener =
-        std::os::unix::net::UnixListener::bind(root.join("F.Report/report.json")).unwrap();
+    // Linux sockaddr_un has a short path limit. Bind through the open parent
+    // descriptor so this fixture also works with a longer TMPDIR on Btrfs.
+    // The socket itself still lives at the normal project marker path.
+    use std::os::fd::AsRawFd;
+    let report_dir = fs::File::open(root.join("F.Report")).unwrap();
+    let socket_path = format!("/proc/self/fd/{}/report.json", report_dir.as_raw_fd());
+    let _listener = std::os::unix::net::UnixListener::bind(socket_path).unwrap();
     let summary = discover_with_timeout(&pbip);
     assert_has(&summary, Code::NotARegularFile);
     assert_eq!(summary.report.format, ComponentFormat::Unknown);

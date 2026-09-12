@@ -1,0 +1,3 @@
+Synthetic unknown file for WP02 external-change tests.
+An out-of-process actor mutating, deleting, or replacing this file
+between snapshot and commit must be detected as a conflict.

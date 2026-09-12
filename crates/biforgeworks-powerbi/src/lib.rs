@@ -1,15 +1,26 @@
-//! Read-only discovery of Power BI Projects (`.pbip`).
+//! Power BI Project (`.pbip`) discovery and safe, explicit writes.
+//!
+//! Discovery ([`discover_project`]) is strictly read-only and always has
+//! been: it updates no content, metadata, or access times. Writing is a
+//! separate, opt-in path in [`safe_writes`], where a session snapshots the
+//! whole project, stages an edit to one managed file, validates it, refuses
+//! to proceed if anything changed underneath, and replaces the file
+//! atomically with the original retained for rollback.
 //!
 //! This crate locates a project's report and semantic-model folders, follows
 //! the documented outer metadata (`.pbip` → `definition.pbir` →
 //! `datasetReference.byPath`), and identifies each component's storage format
 //! from documented structural markers. It never parses TMDL, TMSL, PBIR
-//! pages/visuals, DAX, or any other semantic content, and it never writes to,
+//! pages/visuals, DAX, or any other semantic content. Discovery never writes to,
 //! or updates timestamps of, anything inside the selected project.
 //!
-//! All project metadata is treated as untrusted: every problem is reported as
-//! a [`Diagnostic`] on the returned [`PowerBiProjectSummary`] rather than as a
-//! panic or error value.
+//! All project metadata is treated as untrusted. Discovery problems are reported
+//! as [`Diagnostic`] values on [`PowerBiProjectSummary`]; the safe-write API
+//! returns typed errors with reusable diagnostics.
+//!
+//! There is no general write API. The only content this crate will change is
+//! `settings.enableAutoRecovery` in a `.pbip`, spliced over that boolean's
+//! byte span so everything else in the file survives exactly.
 
 use serde::Serialize;
 use std::path::Path;
@@ -20,10 +31,17 @@ mod metadata;
 #[cfg_attr(not(target_os = "linux"), allow(dead_code))]
 mod reference;
 
+#[cfg_attr(not(target_os = "linux"), allow(dead_code))]
+mod json_span;
+
 #[cfg(target_os = "linux")]
 mod discovery;
 #[cfg(target_os = "linux")]
 mod fs_linux;
+#[cfg(target_os = "linux")]
+pub mod safe_writes;
+#[cfg(target_os = "linux")]
+pub mod snapshot;
 
 /// Largest metadata file (`.pbip`, `definition.pbir`, `definition.pbism`,
 /// `definition/version.json`) that discovery will read. Real files are a few
@@ -147,6 +165,38 @@ pub enum DiagnosticCode {
     FileAccessDenied,
     IoError,
     ReadOnlyGuaranteeUnavailable,
+    // Safe writes (WP02).
+    /// The project tree could not be recorded completely.
+    SnapshotIncomplete,
+    /// The project exceeds the recordable entry, depth, or byte limits.
+    SnapshotTooLarge,
+    /// `settings.enableAutoRecovery` is absent or not a boolean.
+    AutoRecoverySettingUnavailable,
+    /// Staged bytes failed their own validation.
+    StagedContentInvalid,
+    /// A destination is not a file this crate may replace.
+    UnsafeWriteTarget,
+    /// The project as discovered is not in a state this crate will save.
+    ProjectNotSaveable,
+    ExternalFileChanged,
+    ExternalFileAdded,
+    ExternalFileRemoved,
+    ExternalFileReplaced,
+    ExternalFileTypeChanged,
+    /// Another save for the same project is running in this process.
+    ConcurrentSaveBlocked,
+    /// A write or rename failed.
+    WriteFailed,
+    /// Rediscovery after a save no longer matched the project it opened.
+    PostSaveValidationFailed,
+    /// A failed save was undone.
+    SaveRolledBack,
+    /// A replaced file could not be restored.
+    RollbackFailed,
+    /// Recovery data from an interrupted or failed save must be resolved.
+    RecoveryRequired,
+    /// Recovery data could not be cleaned up; nothing unknown was deleted.
+    RecoveryArtifactsRetained,
 }
 
 /// A user-facing finding. Messages never echo untrusted metadata values

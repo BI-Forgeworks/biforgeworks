@@ -1,0 +1,5 @@
+/* Synthetic WP02 fixture artifact, not real Power BI content.
+   Stable path and bytes reserved for future rollback-injection tests:
+   a designated target to corrupt or delete mid-transaction so recovery
+   behavior can be exercised without touching real schema files. */
+rollbackProbe: multi-file-rollback-fixture

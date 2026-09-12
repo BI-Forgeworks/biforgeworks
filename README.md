@@ -5,18 +5,22 @@ analytics development environment.
 
 ## Current status
 
-**Read-only project discovery (WP01).** The Linux desktop can select a `.pbip`,
+**Safe-write foundation (WP02), with a read-only desktop.** The Linux desktop can select a `.pbip`,
 resolve its report and local semantic-model references, identify PBIR,
 PBIR-Legacy, TMDL, and TMSL storage markers, and display structural diagnostics.
-It does not edit or save projects, parse report/model semantics, authenticate,
-or publish. Format identification is not semantic validation.
+The desktop does not expose editing or saving. The Rust Power BI crate now
+provides snapshots, explicit transactions, conflict detection, per-file atomic
+replacement, and rollback/recovery infrastructure. Its sole production mutation
+changes an existing PBIP `settings.enableAutoRecovery` boolean; there is no
+general file-write API exposed to the frontend. No report/model semantic parsing,
+authentication, or publishing exists. Format identification is not semantic validation.
 
 ## Current milestone
 
 > Phase 1: Linux-native PBIP/PBIR/TMDL editing and Power BI/Fabric
 > publishing.
 
-Editing and publishing remain future work. See
+Semantic editing and publishing remain future work. See
 `docs/work-packages/` for how work is sequenced toward this milestone.
 
 ## Goals
@@ -54,12 +58,12 @@ biforgeworks/
 │       └── package.json
 ├── crates/
 │   ├── biforgeworks-core/ # Shared Rust core library
-│   └── biforgeworks-powerbi/ # Read-only project discovery and diagnostics
+│   └── biforgeworks-powerbi/ # Discovery, snapshots, safe transactions, diagnostics
 ├── packages/
 │   └── ui/                # Shared React/TypeScript UI package
 ├── connectors/            # Future data connectors (empty in WP00)
 ├── targets/                # Future publish targets (empty in WP00)
-├── fixtures/powerbi/       # Minimal synthetic discovery fixtures
+├── fixtures/powerbi/       # Synthetic discovery and preservation fixtures
 ├── docs/
 │   ├── architecture/       # Architecture overview
 │   ├── adr/                 # Architecture decision records
@@ -153,17 +157,24 @@ These are the authoritative validation commands; `scripts/check.sh` runs
 them locally as a convenience wrapper but does not replace them:
 
 ```bash
+cargo check --workspace --locked
 cargo fmt --check
 cargo clippy --workspace --all-targets --all-features -- -D warnings
 cargo test --workspace
+cargo test -p biforgeworks-powerbi --features safe_write_test_support
 pnpm install --frozen-lockfile
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm build
+git diff --check
 ```
 
-Rust coverage exercises discovery, malformed inputs, path confinement, and
-read-only preservation. Vitest covers project rendering, diagnostics, errors,
+Rust coverage exercises discovery, malformed inputs, path confinement,
+preservation, explicit metadata edits, external conflicts, and failure recovery.
+The default-off `safe_write_test_support` feature adds test-only staging and
+fault injection; it is never enabled for desktop production builds.
+Vitest covers project rendering, diagnostics, errors,
 and cancellation with the native bridge mocked. Native Linux selection/open
 is validated separately; Vitest is not native-window E2E automation.
 
@@ -171,6 +182,11 @@ See [discovery architecture](docs/architecture/powerbi-project-discovery.md)
 for supported metadata, security limits, and timestamp-preserving Linux reads.
 Remote model connections and references outside the selected project root are
 diagnosed without following them.
+
+See [safe-write architecture](docs/architecture/powerbi-safe-writes.md) for the
+transaction API, snapshot limits, atomicity and rollback guarantees, and manual
+recovery instructions. Synthetic fixtures do not establish Power BI Desktop
+round-trip compatibility.
 
 ## Build
 

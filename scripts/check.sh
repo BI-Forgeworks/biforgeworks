@@ -7,6 +7,9 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
+echo "==> cargo check --workspace --locked"
+cargo check --workspace --locked
+
 echo "==> cargo fmt --check"
 cargo fmt --check
 
@@ -15,6 +18,9 @@ cargo clippy --workspace --all-targets --all-features -- -D warnings
 
 echo "==> cargo test --workspace"
 cargo test --workspace
+
+echo "==> cargo test -p biforgeworks-powerbi --features safe_write_test_support"
+cargo test -p biforgeworks-powerbi --features safe_write_test_support
 
 echo "==> pnpm install --frozen-lockfile"
 pnpm install --frozen-lockfile
@@ -30,5 +36,8 @@ pnpm test
 
 echo "==> pnpm build"
 pnpm build
+
+echo "==> git diff --check"
+git diff --check
 
 echo "==> all checks passed"

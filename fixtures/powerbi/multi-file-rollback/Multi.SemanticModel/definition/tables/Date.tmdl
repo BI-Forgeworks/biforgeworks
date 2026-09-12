@@ -1,0 +1,3 @@
+table Date
+	column Date
+		dataType: dateTime

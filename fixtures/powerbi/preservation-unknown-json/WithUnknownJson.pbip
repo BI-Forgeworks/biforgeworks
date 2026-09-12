@@ -1,0 +1,28 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
+  "version": "1.0",
+  "artifacts": [
+    {
+      "report": {
+        "path": "WithUnknownJson.Report"
+      }
+    }
+  ],
+  "settings": {
+    "enableAutoRecovery": true,
+    "futureSetting\"Quoted\"": false,
+    "nested": {
+      "deeper": {
+        "flagA": true,
+        "flagB": false
+      }
+    }
+  },
+  "futureTopLevel": {
+    "enabled": true,
+    "decoyEnabled": false,
+    "escaped\nKey": "value\twith\ttabs",
+    "unicodeKeyé": "café"
+  },
+  "trailingDecoy": false
+}
