@@ -1,0 +1,10 @@
+relationship SalesDate
+	fromColumn: Sales.OrderDateKey
+	toColumn: Date.DateKey
+	fromCardinality: many
+	toCardinality: one
+	crossFilteringBehavior: oneDirection
+	isActive: true
+	securityFilteringBehavior: oneDirection
+	annotation Purpose = Synthetic relationship
+

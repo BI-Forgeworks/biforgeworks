@@ -57,3 +57,4 @@ What this makes easier, harder, or constrains going forward.
 - [ADR-0003: Monorepo Architecture](0003-monorepo-architecture.md)
 - [ADR-0004: Power BI interoperability crate](0004-powerbi-interoperability-crate.md)
 - [ADR-0005: Snapshot-based explicit transactions](0005-snapshot-based-explicit-transactions.md)
+- [ADR-0006: Source-preserving TMDL reader](0006-source-preserving-tmdl-reader.md)

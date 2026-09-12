@@ -1,0 +1,10 @@
+/// Synthetic sales model
+model Model
+	culture: en-US
+	sourceQueryCulture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	annotation Purpose = WP03 synthetic fixture
+
+ref table Sales
+ref table Date
+

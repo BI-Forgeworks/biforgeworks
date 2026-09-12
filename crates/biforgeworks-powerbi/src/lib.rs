@@ -10,8 +10,9 @@
 //! This crate locates a project's report and semantic-model folders, follows
 //! the documented outer metadata (`.pbip` → `definition.pbir` →
 //! `datasetReference.byPath`), and identifies each component's storage format
-//! from documented structural markers. It never parses TMDL, TMSL, PBIR
-//! pages/visuals, DAX, or any other semantic content. Discovery never writes to,
+//! from documented structural markers. The separate [`tmdl`] reader projects
+//! TMDL semantic objects while retaining source and opaque DAX/M. TMSL and PBIR
+//! pages/visuals are not parsed. Discovery never writes to,
 //! or updates timestamps of, anything inside the selected project.
 //!
 //! All project metadata is treated as untrusted. Discovery problems are reported
@@ -24,6 +25,8 @@
 
 use serde::Serialize;
 use std::path::Path;
+
+pub mod tmdl;
 
 // Only the Linux discovery path consumes these today.
 #[cfg_attr(not(target_os = "linux"), allow(dead_code))]

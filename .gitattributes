@@ -1,3 +1,6 @@
 # Preservation fixtures are byte-level evidence, including intentional CRLF/BOM.
 # Never normalize them on checkout or staging; accept CR as a line terminator.
 fixtures/powerbi/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# TMDL source fixtures deliberately retain separator lines at EOF.
+fixtures/powerbi/tmdl-*/**/*.tmdl whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

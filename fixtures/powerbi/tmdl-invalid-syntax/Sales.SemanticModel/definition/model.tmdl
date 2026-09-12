@@ -1,0 +1,4 @@
+model Model
+   table Broken
+	measure 'Unclosed = 1
+

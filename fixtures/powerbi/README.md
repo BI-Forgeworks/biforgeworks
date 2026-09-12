@@ -33,3 +33,22 @@ directories.
 
 Never use these fixtures as evidence that a complete report reopens in Power BI
 Desktop. They validate filesystem preservation and structural discovery only.
+
+## WP03 TMDL fixtures
+
+All `tmdl-*` fixtures are synthetic, authored for this repository using the
+structural conventions in Microsoft's TMDL overview. They contain no customer
+reports, credentials, executable test content, or copied private models.
+
+| Fixture | Purpose |
+| --- | --- |
+| tmdl-minimal | Optional files absent; minimal model |
+| tmdl-star-schema | Two tables, seven columns, three measures, relationship, hierarchy, partitions, role, perspective, culture, expression and function |
+| tmdl-unknown-properties | Preserve and warn about unsupported syntax |
+| tmdl-broken-references | Stable unresolved-reference diagnostics |
+| tmdl-invalid-syntax | Invalid declaration/quoted identifier |
+| tmdl-performance | 50 tables, 500 columns, 250 measures, 100 relationships |
+
+Additional focused grammar cases are inline in `tests/tmdl.rs`. The performance
+fixture is parsed by `moderate_model_performance`; it is not a Desktop export.
+See `docs/architecture/tmdl-reader.md` for official compatibility references.

@@ -1,0 +1,3 @@
+function Twice = (value: NUMERIC) => value * 2
+	lineageTag: synthetic-twice
+

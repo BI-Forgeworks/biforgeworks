@@ -30,6 +30,8 @@ fn assert_discovery_is_read_only(tree: &Path, pbip: &Path) {
     // Twice: repeated opens must not differ from the first.
     let again = discover_project(pbip);
     assert_eq!(summary, again);
+    biforgeworks_powerbi::tmdl::inspect_project(pbip);
+    biforgeworks_powerbi::tmdl::inspect_project(pbip);
 
     let after = stat_all(&paths);
     for ((path, b), (_, a)) in before.iter().zip(&after) {
@@ -84,6 +86,11 @@ fn every_fixture_is_opened_read_only() {
         ("missing-model", "MissingModel.pbip"),
         ("malformed-pbip", "Malformed.pbip"),
         ("unknown-formats", "Unknown.pbip"),
+        ("tmdl-star-schema", "Sales.pbip"),
+        ("tmdl-minimal", "Sales.pbip"),
+        ("tmdl-unknown-properties", "Sales.pbip"),
+        ("tmdl-invalid-syntax", "Sales.pbip"),
+        ("tmdl-broken-references", "Sales.pbip"),
     ] {
         let dir = copy_fixture(fixture, tmp.path());
         assert_discovery_is_read_only(&dir, &dir.join(pbip));

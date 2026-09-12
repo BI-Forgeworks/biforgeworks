@@ -1,0 +1,7 @@
+perspective Overview
+	perspectiveTable Sales
+		perspectiveColumn Quantity
+		perspectiveMeasure 'Sales Amount'
+	perspectiveTable Date
+		perspectiveHierarchy Calendar
+

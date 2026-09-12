@@ -2,6 +2,8 @@ import { BrandHeader, ProjectExplorer, type ProjectExplorerData } from '@biforge
 import type { AppMetadata } from './api/appMetadata'
 import type { PowerbiProjectSummary } from './api/powerbiProject'
 import './App.css'
+import { SemanticExplorer } from './SemanticExplorer'
+import type { SemanticInspection } from './api/semanticModel'
 
 export interface AppShellProps {
   metadata: AppMetadata | null
@@ -9,6 +11,8 @@ export interface AppShellProps {
   isOpeningProject: boolean
   projectError: string | null
   onOpenProject: () => void
+  inspection?: SemanticInspection | null
+  inspectionError?: string | null
 }
 
 /**
@@ -22,6 +26,8 @@ export function AppShell({
   isOpeningProject,
   projectError,
   onOpenProject,
+  inspection,
+  inspectionError,
 }: AppShellProps) {
   return (
     <main className="app-shell">
@@ -62,6 +68,8 @@ export function AppShell({
                 <p className="app-shell__empty">No Power BI project opened yet.</p>
               )
             )}
+            {inspectionError && <p role="alert">Semantic inspection failed: {inspectionError}</p>}
+            {inspection && <SemanticExplorer key={project?.project_file} inspection={inspection} />}
           </section>
         </>
       ) : (
