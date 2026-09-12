@@ -1,0 +1,11 @@
+culture fr-FR
+	translations
+		model Model
+			table Sales
+				caption: Ventes
+				measure 'Sales Amount'
+					caption: Montant des ventes
+	linguisticMetadata = ```
+{"Version":"1.0.0","Language":"fr-FR"}
+		```
+

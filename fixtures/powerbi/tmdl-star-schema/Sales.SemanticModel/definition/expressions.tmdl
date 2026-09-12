@@ -1,0 +1,8 @@
+expression Threshold =
+		let
+		    Limit = 10
+		in
+		    Limit
+	kind: m
+	annotation Purpose = Synthetic parameter
+

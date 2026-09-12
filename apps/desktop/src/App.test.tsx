@@ -15,6 +15,9 @@ vi.mock('./api/appMetadata', () => ({
 
 const selectPowerbiProject = vi.fn()
 const openPowerbiProject = vi.fn()
+vi.mock('./api/semanticModel', () => ({
+  inspectPowerbiSemanticModel: vi.fn().mockResolvedValue({ status: 'ready', model: null, diagnostics: [] }),
+}))
 
 vi.mock('./api/powerbiProject', () => ({
   selectPowerbiProject: (...args: unknown[]) => selectPowerbiProject(...args),

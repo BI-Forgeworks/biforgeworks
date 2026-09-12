@@ -5,7 +5,8 @@
 WP00 established the application shell and layering. WP01 adds read-only
 Power BI project discovery, format identification, and diagnostics. WP02 adds
 snapshot-based explicit transactions inside the Power BI crate. The desktop
-remains read-only; semantic parsing/editing and publishing remain future work.
+remains read-only. WP03 adds structural TMDL parsing and typed semantic inspection;
+semantic editing and publishing remain future work.
 
 ## Implemented boundary
 
@@ -15,7 +16,7 @@ React / TypeScript
        ▼
    Tauri Commands
        ├── biforgeworks-core (application metadata)
-       └── biforgeworks-powerbi (discovery)
+       └── biforgeworks-powerbi (discovery and TMDL inspection)
                        │
                        ▼
              bounded local filesystem access
@@ -56,7 +57,7 @@ surface.
 ## Reserved conceptual layers
 
 The following layers are reserved in the architecture but are **not
-implemented** by WP02. They exist here only so that future work packages
+implemented** by WP03. They exist here only so that future work packages
 have a named place to land, and so that early decisions do not foreclose
 them:
 
@@ -70,7 +71,7 @@ them:
 - **Agents** — agent-facing interfaces built on the shared core commands.
 
 The dedicated adapter contains outer project discovery and explicit safe-write
-infrastructure, with no BFIR translation or semantic object model. The remaining layers must
+infrastructure and a Power BI-specific semantic inspection model, with no BFIR translation. The remaining layers must
 not be implemented opportunistically; each is scoped to a future work
 package per `docs/work-packages/`.
 
@@ -82,3 +83,14 @@ package per `docs/work-packages/`.
 - Dedicated crate decision: [ADR-0004](../adr/0004-powerbi-interoperability-crate.md)
 - Save boundary: [Power BI safe writes](powerbi-safe-writes.md)
 - Transaction decision: [ADR-0005](../adr/0005-snapshot-based-explicit-transactions.md)
+
+## TMDL inspection
+
+`inspect_powerbi_semantic_model` operates on the backend's currently opened PBIP,
+without a frontend path argument. Rust loads confined definition sources, builds
+source-preserving syntax, and projects typed semantic objects for React. DAX/M
+remain opaque and no editing command is added. See [TMDL reader](tmdl-reader.md)
+and [ADR-0006](../adr/0006-source-preserving-tmdl-reader.md).
+
+The current priority is the Linux Power BI viewer/editor. Fabric, BFIR,
+connectors, broader visuals, agents, and alternative targets remain deferred.

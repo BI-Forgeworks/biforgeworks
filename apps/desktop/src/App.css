@@ -29,7 +29,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  width: min(640px, 100%);
+  width: min(1200px, 100%);
   margin-top: 1.5rem;
 }
 
@@ -217,3 +217,19 @@
   word-break: break-all;
   color: light-dark(#666, #999);
 }
+.semantic-explorer { width: 100%; text-align: left; margin-top: 2rem; border-top: 1px solid #43516a; padding-top: 1rem; }
+.semantic-layout { display: grid; grid-template-columns: minmax(12rem, 30%) minmax(0, 1fr); gap: 1.5rem; }
+.semantic-layout nav { max-height: 65vh; overflow: auto; padding: .75rem; border: 1px solid #43516a; border-radius: .5rem; }
+.semantic-layout ul { list-style: none; padding-left: 1rem; }
+.semantic-layout summary { cursor: pointer; padding: .4rem 0; }
+.semantic-layout button { cursor: pointer; display: block; width: 100%; text-align: left; padding: .4rem; background: transparent; color: inherit; border: 1px solid transparent; border-radius: .25rem; }
+.semantic-layout button:hover, .semantic-layout button[aria-pressed="true"] { background: light-dark(#dceafa, #233751); border-color: #6099d0; }
+.semantic-layout button:focus-visible { outline: 2px solid #85bdff; }
+.semantic-inspector { min-width: 0; overflow-wrap: anywhere; }
+.semantic-inspector dl > div { display: grid; grid-template-columns: minmax(7rem, 30%) minmax(0, 1fr); gap: 1rem; margin-bottom: .5rem; }
+.semantic-inspector dt { color: light-dark(#42546c, #a9bdd4); }
+.semantic-inspector dd { margin: 0; white-space: pre-wrap; }
+.semantic-inspector pre { white-space: pre; overflow: auto; padding: 1rem; background: light-dark(#edf2f8, #101824); border-radius: .5rem; max-height: 35rem; }
+.semantic-diagnostic--error { color: light-dark(#a52020, #ffacac); }
+.semantic-diagnostic--warning { color: light-dark(#785600, #f1d59a); }
+@media (max-width: 560px) { .semantic-layout { grid-template-columns: 1fr; } }

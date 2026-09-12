@@ -1,0 +1,6 @@
+model Model
+	futureFlag: retained
+	table Sales
+		futureObject Next
+			futureValue: preserved
+

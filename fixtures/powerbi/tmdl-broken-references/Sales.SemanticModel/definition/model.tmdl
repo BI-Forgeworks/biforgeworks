@@ -1,0 +1,11 @@
+model Model
+
+table Sales
+	hierarchy Broken
+		level Missing
+			column: Absent
+
+relationship Broken
+	fromColumn: Sales.Absent
+	toColumn: Unknown.Key
+

@@ -1,0 +1,4 @@
+role Reader
+	modelPermission: read
+	tablePermission Sales = [Quantity] > 0
+

@@ -5,38 +5,33 @@ analytics development environment.
 
 ## Current status
 
-**Safe-write foundation (WP02), with a read-only desktop.** The Linux desktop can select a `.pbip`,
-resolve its report and local semantic-model references, identify PBIR,
-PBIR-Legacy, TMDL, and TMSL storage markers, and display structural diagnostics.
-The desktop does not expose editing or saving. The Rust Power BI crate now
-provides snapshots, explicit transactions, conflict detection, per-file atomic
-replacement, and rollback/recovery infrastructure. Its sole production mutation
-changes an existing PBIP `settings.enableAutoRecovery` boolean; there is no
-general file-write API exposed to the frontend. No report/model semantic parsing,
-authentication, or publishing exists. Format identification is not semantic validation.
+**Read-only TMDL semantic inspection (WP03).** Open a `.pbip` on Linux to
+inspect project references, report/model formats, and structural diagnostics.
+For TMDL models, browse tables, columns, measures, hierarchies, partitions,
+relationships, roles, perspectives, cultures, named expressions, and functions.
+DAX and Power Query M are displayed as opaque source text. TMSL discovery works;
+TMSL semantic inspection is not supported.
+
+The desktop has no editing or saving controls. WP02's Rust transaction foundation
+remains available internally, with no frontend filesystem write authority.
+The reader retains source spans and unsupported syntax; it does not establish
+complete TOM validation or Power BI Desktop compatibility.
 
 ## Current milestone
 
-> Phase 1: Linux-native PBIP/PBIR/TMDL editing and Power BI/Fabric
-> publishing.
+> Build a usable Linux-native Power BI viewer/editor first.
 
-Semantic editing and publishing remain future work. See
-`docs/work-packages/` for how work is sequenced toward this milestone.
+The near-term sequence is TMDL reading/editing, DAX editing UX, a model diagram,
+PBIR reading, report canvas, basic visual editing, and round-trip hardening.
+Fabric publishing, connectors, BFIR, alternative exports, visuals frameworks,
+and agent integration are deferred. WP04 has not begun. An approved real
+Desktop-created TMDL PBIP must be validated before production semantic writes.
 
 ## Goals
 
-- Open, inspect, safely edit, save, and publish Power BI PBIP/PBIR/TMDL
-  projects, natively on Linux.
-- Keep Rust authoritative for project and domain behavior, with React as a
-  presentation layer only (see `docs/architecture/overview.md`).
-- Grow deliberately, one work package at a time, with architecture
-  decisions recorded as ADRs (`docs/adr/`).
-
-Longer-term, possible future layers include a portable BI intermediate
-representation, data connectors, a local analytical runtime, HTML/SVG and
-geospatial visuals, and agent interfaces. These are not implemented and are
-not committed to; see `docs/architecture/overview.md` for how they are
-reserved without being built.
+- Open, inspect, and eventually safely edit Power BI projects on Linux.
+- Keep Rust authoritative for project/domain behavior and React for presentation.
+- Deliver one reviewed work package at a time, recording architecture decisions.
 
 ## Stack
 
@@ -58,12 +53,12 @@ biforgeworks/
 │       └── package.json
 ├── crates/
 │   ├── biforgeworks-core/ # Shared Rust core library
-│   └── biforgeworks-powerbi/ # Discovery, snapshots, safe transactions, diagnostics
+│   └── biforgeworks-powerbi/ # Discovery, TMDL reader, snapshots, safe transactions
 ├── packages/
 │   └── ui/                # Shared React/TypeScript UI package
 ├── connectors/            # Future data connectors (empty in WP00)
 ├── targets/                # Future publish targets (empty in WP00)
-├── fixtures/powerbi/       # Synthetic discovery and preservation fixtures
+├── fixtures/powerbi/       # Synthetic discovery, preservation, and TMDL fixtures
 ├── docs/
 │   ├── architecture/       # Architecture overview
 │   ├── adr/                 # Architecture decision records
@@ -142,7 +137,7 @@ the Vite server and opens the native window. Choose **Open Power BI Project**
 and select a `.pbip`. To try a synthetic example, select the file inside:
 
 ```text
-fixtures/powerbi/valid-pbir-tmdl/
+fixtures/powerbi/tmdl-star-schema/Sales.pbip
 ```
 
 For browser-only frontend iteration without a native window, run:
@@ -171,7 +166,8 @@ git diff --check
 ```
 
 Rust coverage exercises discovery, malformed inputs, path confinement,
-preservation, explicit metadata edits, external conflicts, and failure recovery.
+preservation, explicit metadata edits, external conflicts, failure recovery,
+and source-aware TMDL parsing and reference resolution.
 The default-off `safe_write_test_support` feature adds test-only staging and
 fault injection; it is never enabled for desktop production builds.
 Vitest covers project rendering, diagnostics, errors,
@@ -187,6 +183,9 @@ See [safe-write architecture](docs/architecture/powerbi-safe-writes.md) for the
 transaction API, snapshot limits, atomicity and rollback guarantees, and manual
 recovery instructions. Synthetic fixtures do not establish Power BI Desktop
 round-trip compatibility.
+
+See [TMDL reader architecture](docs/architecture/tmdl-reader.md) for grammar
+coverage, source preservation, limits, and compatibility gaps.
 
 ## Build
 

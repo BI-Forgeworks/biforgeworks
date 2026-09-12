@@ -1,0 +1,22 @@
+table Date
+	column DateKey
+		dataType: int64
+		sourceColumn: DateKey
+		isKey
+	column Year
+		dataType: int64
+		sourceColumn: Year
+	column Month
+		dataType: string
+		sourceColumn: Month
+	hierarchy Calendar
+		level Year
+			ordinal: 0
+			column: Year
+		level Month
+			ordinal: 1
+			column: Month
+	partition Date = m
+		mode: import
+		source = #table({"DateKey", "Year", "Month"}, {{20260101, 2026, "January"}})
+

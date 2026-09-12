@@ -1,0 +1,51 @@
+/// Sales transactions
+table Sales
+	lineageTag: synthetic-sales
+	dataCategory: Regular
+
+	column OrderDateKey
+		dataType: int64
+		sourceColumn: OrderDateKey
+		isHidden
+
+	column Quantity
+		dataType: int64
+		sourceColumn: Quantity
+		summarizeBy: sum
+
+	column 'Net Price'
+		dataType: decimal
+		sourceColumn: "Net Price"
+		formatString: $#,0.00
+
+	column Revenue = [Quantity] * [Net Price]
+		dataType: decimal
+
+	/// Revenue across transactions
+	measure 'Sales Amount' =
+			SUMX (
+			    'Sales',
+			    [Quantity] * [Net Price]
+			)
+		formatString: $#,0
+		displayFolder: Revenue
+		lineageTag: synthetic-sales-amount
+
+	measure 'Gross Margin' = [Sales Amount] * 0.3
+
+	measure 'Gross Margin %' =
+			DIVIDE (
+			    [Gross Margin],
+			    [Sales Amount],
+			    0
+			)
+		formatString: 0.0%
+
+	partition Sales = m
+		mode: import
+		source =
+			let
+			    Source = #table({"OrderDateKey", "Quantity", "Net Price"}, {{20260101, 2, 10}})
+			in
+			    Source
+
