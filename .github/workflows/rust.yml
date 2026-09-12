@@ -47,6 +47,9 @@ jobs:
       - name: cargo fmt --check
         run: cargo fmt --all --check
 
+      - name: cargo check --workspace --locked
+        run: cargo check --workspace --locked
+
       - name: cargo clippy
         run: cargo clippy --workspace --all-targets --all-features -- -D warnings
 
@@ -55,3 +58,6 @@ jobs:
       # a full `tauri build` bundle.
       - name: cargo test --workspace
         run: cargo test --workspace
+
+      - name: Safe-write fault injection and transaction integration tests
+        run: cargo test -p biforgeworks-powerbi --features safe_write_test_support

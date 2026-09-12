@@ -56,3 +56,4 @@ What this makes easier, harder, or constrains going forward.
 - [ADR-0002: pnpm as JavaScript Package Manager](0002-pnpm-as-javascript-package-manager.md)
 - [ADR-0003: Monorepo Architecture](0003-monorepo-architecture.md)
 - [ADR-0004: Power BI interoperability crate](0004-powerbi-interoperability-crate.md)
+- [ADR-0005: Snapshot-based explicit transactions](0005-snapshot-based-explicit-transactions.md)

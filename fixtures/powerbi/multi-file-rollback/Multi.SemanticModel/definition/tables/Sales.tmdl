@@ -1,0 +1,3 @@
+table Sales
+	column Amount
+		dataType: double

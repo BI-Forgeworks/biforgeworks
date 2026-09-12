@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definitionProperties/2.0.0/schema.json",
+  "version": "4.0",
+  "futureFeature": {
+    "enabled": true,
+    "decoyEnabled": false,
+    "nested": {
+      "deeper": {
+        "deepest": {
+          "flagA": true,
+          "flagB": false,
+          "flagC": true
+        }
+      },
+      "quoted\"Key": "value with \"internal\" quotes",
+      "tabbed\tKey": "value"
+    }
+  },
+  "escaped\nKey": "line1\nline2",
+  "unicodeKeyé": "café",
+  "trailingDecoy": false
+}

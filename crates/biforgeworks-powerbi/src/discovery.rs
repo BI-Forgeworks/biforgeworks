@@ -811,7 +811,11 @@ impl Discovery<'_> {
                 Code::ReadOnlyGuaranteeUnavailable,
                 format!("{label} could not be opened without updating its access time (Linux O_NOATIME requires owning the file), so it was not read."),
             ),
-            FsError::InvalidName | FsError::Io => (Code::IoError, format!("{label} could not be read.")),
+            FsError::InvalidName
+            | FsError::Io
+            | FsError::AlreadyExists
+            | FsError::Unstable
+            | FsError::Unsupported => (Code::IoError, format!("{label} could not be read.")),
         };
         self.push(Severity::Error, code, message, path);
     }

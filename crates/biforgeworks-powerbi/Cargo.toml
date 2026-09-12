@@ -3,11 +3,18 @@ name = "biforgeworks-powerbi"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Read-only Power BI Project (PBIP) discovery and format identification for BI Forgeworks."
+description = "Power BI Project (PBIP) discovery, whole-tree snapshots, and snapshot-validated safe writes for BI Forgeworks."
+
+[features]
+# Internal, default-off hooks that let tests stage several files and force
+# deterministic failures. Production builds expose no freeform write path.
+safe_write_test_support = []
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# Content hashing for snapshots; already present in the workspace lockfile.
+sha2 = "0.10"
 
 # Descriptor-relative, no-follow, no-atime reads (openat/fstatat/O_NOATIME)
 # are not expressible with std alone.
